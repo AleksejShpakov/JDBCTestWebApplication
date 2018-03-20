@@ -9,9 +9,19 @@
         <servlet-class>servlets.MainPage</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>AddUser</servlet-name>
+        <servlet-class>servlets.AddUser</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>MainPage</servlet-name>
         <url-pattern>/MainPage</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AddUser</servlet-name>
+        <url-pattern>/AddUser</url-pattern>
     </servlet-mapping>
 
 
