@@ -82,16 +82,21 @@
     function addUser() {
         $.ajax({
             type: "POST",
-            url: "${pageContext.request.contextPath}/AddUser",
+            url: "${pageContext.request.contextPath}/UserServlet",
             data: {
+                method: 'addUser',
                 name: document.getElementById('input_user_name').value,
                 surname: document.getElementById('input_user_surname').value,
                 patronymic: document.getElementById('input_user_patronymic').value
             },
             success: function(msg){
-                alert( "Прибыли данные: " + msg );
+                console.log('Прибыли данные: ' + msg.message);
             }
         });
+    };
+
+    function refreshTable(usersArray) {
+
     };
 </script>
 

@@ -10,8 +10,8 @@
     </servlet>
 
     <servlet>
-        <servlet-name>AddUser</servlet-name>
-        <servlet-class>servlets.AddUser</servlet-class>
+        <servlet-name>UserServlet</servlet-name>
+        <servlet-class>servlets.UserServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -20,9 +20,8 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>AddUser</servlet-name>
-        <url-pattern>/AddUser</url-pattern>
+        <servlet-name>UserServlet</servlet-name>
+        <url-pattern>/UserServlet</url-pattern>
     </servlet-mapping>
-
 
 </web-app>

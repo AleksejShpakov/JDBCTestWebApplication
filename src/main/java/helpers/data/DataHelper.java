@@ -27,15 +27,20 @@ public class DataHelper {
         }
     }
 
+
     public User addUser(User user){
         Statement statement = null;
-        ResultSet resultSet = null;
+        int updated = 0;
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("INSERT INTO \"user\"(name, surname, patronymic)" +
+            updated = statement.executeUpdate ("INSERT INTO \"user\"(name, surname, patronymic)" +
                     "VALUES ('" + user.getName() + "', '" + user.getSurName() + "', '" + user.getPatronymic() + "');");
         } catch (SQLException e) {
             e.printStackTrace();
+            user = null;
+        }
+
+        if (updated < 1){
             user = null;
         }
         return user;
