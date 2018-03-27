@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -59,84 +58,102 @@ public class UserServlet extends HttpServlet {
     }
 
     private JSONObject addUser(HttpServletRequest request){
-        DataHelper dataHelper = null;
         User user = null;
         JSONObject outJSONObject = new JSONObject();
-        String status = "";
-
-        try {
-            dataHelper = new DataHelper("java:/Postgres");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        if (dataHelper == null){
-            outJSONObject.put("status", ResponseStatusDefinition.ERROR);
-            outJSONObject.put("message", "Connect to db failed.");
-            return outJSONObject;
-        }
 
         user = new User(request.getParameter("name"), request.getParameter("surname"), request.getParameter("patronymic"));
-        user = dataHelper.addUser(user);
-        if (user == null){
+        try {
+            user = DataHelper.addUser(user);
+        }catch(Exception ex){
             outJSONObject.put("status", ResponseStatusDefinition.ERROR);
-            outJSONObject.put("message", "Add user failed.");
+            outJSONObject.put("message", ex.getMessage());
             return outJSONObject;
         }
 
         outJSONObject.put("status", ResponseStatusDefinition.SUCCESS);
         outJSONObject.put("message", "Add user success.");
+
+        return outJSONObject;
+    }
+
+    private JSONObject removeUser(HttpServletRequest request){
+        User user = null;
+        JSONObject outJSONObject = new JSONObject();
+
+        user = new User(request.getParameter("name"), request.getParameter("surname"), request.getParameter("patronymic"));
+        try{
+            user = DataHelper.removeUser(user);
+        }catch(Exception ex){
+            outJSONObject.put("status", ResponseStatusDefinition.ERROR);
+            outJSONObject.put("message", ex.getMessage());
+            return outJSONObject;
+        }
+
+        outJSONObject.put("status", ResponseStatusDefinition.SUCCESS);
+        outJSONObject.put("message", "Remove user success.");
 
         return outJSONObject;
     }
 
     private JSONObject getAllUsers(HttpServletRequest request){
-        DataHelper dataHelper = null;
         User user = null;
         List<User> userList = null;
         JSONObject outJSONObject = new JSONObject();
         JSONObject userJSONObject = null;
         JSONArray usersJSONArray = null;
-        String status = "";
 
-        try {
-            dataHelper = new DataHelper("java:/Postgres");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        if (dataHelper == null){
+        try{
+            userList = DataHelper.getAllUsers();
+        }catch(Exception ex){
             outJSONObject.put("status", ResponseStatusDefinition.ERROR);
-            outJSONObject.put("message", "Connect to db failed.");
+            outJSONObject.put("message", ex.getMessage());
             return outJSONObject;
         }
-
-        user = new User(request.getParameter("name"), request.getParameter("surname"), request.getParameter("patronymic"));
-        user = dataHelper.addUser(user);
-        if (user == null){
-            outJSONObject.put("status", ResponseStatusDefinition.ERROR);
-            outJSONObject.put("message", "Add user failed.");
-            return outJSONObject;
-        }
-/*
-        userList = dataHelper.getAllUsers();
         usersJSONArray = new JSONArray();
-        if(userList != null && userList.size() > 0){
-            for(int i = 0; i < userList.size(); i++){
-                user = userList.get(i);
-                userJSONObject = new JSONObject();
-                userJSONObject.put("name", user.getName());
-                userJSONObject.put("surname", user.getSurName());
-                userJSONObject.put("patronymic", user.getPatronymic());
-                usersJSONArray.put(userJSONObject);
-            }
-        }*/
+        for(int i = 0; i < userList.size(); i++){
+            user = userList.get(i);
+            userJSONObject = new JSONObject();
+            userJSONObject.put("name", user.getName());
+            userJSONObject.put("surname", user.getSurName());
+            userJSONObject.put("patronymic", user.getPatronymic());
+            usersJSONArray.put(userJSONObject);
+        }
 
         outJSONObject.put("users", usersJSONArray);
         outJSONObject.put("status", ResponseStatusDefinition.SUCCESS);
-        outJSONObject.put("message", "Add user success.");
+        outJSONObject.put("message", "Get users success.");
 
         return outJSONObject;
     }
 
+    private JSONObject searchUsers(HttpServletRequest request){
+        User user = null;
+        List<User> userList = null;
+        JSONObject outJSONObject = new JSONObject();
+        JSONObject userJSONObject = null;
+        JSONArray usersJSONArray = null;
+
+        try{
+            userList = DataHelper.searchUsers(request.getParameter("search_parameter_type"), request.getParameter("search_parameter_value"));
+        }catch(Exception ex){
+            outJSONObject.put("status", ResponseStatusDefinition.ERROR);
+            outJSONObject.put("message", ex.getMessage());
+            return outJSONObject;
+        }
+        usersJSONArray = new JSONArray();
+        for(int i = 0; i < userList.size(); i++){
+            user = userList.get(i);
+            userJSONObject = new JSONObject();
+            userJSONObject.put("name", user.getName());
+            userJSONObject.put("surname", user.getSurName());
+            userJSONObject.put("patronymic", user.getPatronymic());
+            usersJSONArray.put(userJSONObject);
+        }
+
+        outJSONObject.put("users", usersJSONArray);
+        outJSONObject.put("status", ResponseStatusDefinition.SUCCESS);
+        outJSONObject.put("message", "Serch users success.");
+
+        return outJSONObject;
+    }
 }

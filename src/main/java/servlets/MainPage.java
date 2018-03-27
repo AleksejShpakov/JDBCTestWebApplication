@@ -20,25 +20,6 @@ public class MainPage extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        DataHelper dataHelper = null;
-        ArrayList<User> userList = null;
-        try {
-            dataHelper = new DataHelper("java:/Postgres");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println("Can not create DataHelper");
-        }
-
-        if (dataHelper == null){
-            System.out.println("Connection not created!=(");
-        }else{
-            System.out.println("Connection created!=)");
-        }
-
-        userList = dataHelper.getAllUsers();
-
-        request.setAttribute("userList", userList);
-
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("views/index.jsp");
         requestDispatcher.forward(request, response);
     }
